@@ -6,11 +6,12 @@ pipeline {
         stage('Checkout') {
             steps {
                 echo 'Checking out PDF Navigator Extension'
+
                 checkout([
                     $class: 'GitSCM',
                     branches: [[name: '*/main']],
                     userRemoteConfigs: [[
-                        url: 'https://github.com/PTharanan/pdf-navigator-extension.git'
+                        url: 'https://github.com/MMounika-DevOps/pdf-navigator-extension.git'
                     ]]
                 ])
             }
@@ -31,6 +32,7 @@ pipeline {
                     test -f Dockerfile
                     test -f nginx.conf
                     test -f docker-compose.yml
+                    test -f Jenkinsfile
 
                     echo "Source verification successful"
                 '''
@@ -49,16 +51,16 @@ pipeline {
 
         stage('Deploy Application') {
             steps {
-                echo 'Deploying application'
+                echo 'Deploying PDF Navigator application'
 
                 sh '''
                     docker rm -f pdf-navigator || true
 
                     docker run -d \
-                      --name pdf-navigator \
-                      -p 80:80 \
-                      --restart unless-stopped \
-                      pdf-navigator:latest
+                        --name pdf-navigator \
+                        -p 80:80 \
+                        --restart unless-stopped \
+                        pdf-navigator:latest
                 '''
             }
         }
@@ -81,6 +83,8 @@ pipeline {
                 sh '''
                     sleep 5
                     curl -f http://localhost/
+                    echo
+                    echo "Application test successful"
                 '''
             }
         }
@@ -88,11 +92,15 @@ pipeline {
 
     post {
         success {
-            echo 'PDF Navigator deployment completed successfully!'
+            echo '========================================='
+            echo 'PDF Navigator deployment SUCCESSFUL'
+            echo '========================================='
         }
 
         failure {
-            echo 'PDF Navigator deployment failed!'
+            echo '========================================='
+            echo 'PDF Navigator deployment FAILED'
+            echo '========================================='
         }
     }
 }

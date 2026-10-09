@@ -1,0 +1,9 @@
+services:
+  pdf-navigator:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: pdf-navigator
+    ports:
+      - "80:80"
+    restart: unless-stopped
